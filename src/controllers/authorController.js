@@ -1,4 +1,4 @@
-import * as AuthorModel from "../models/authorModel";
+import * as AuthorModel from "../models/authorModel.js";
 
 const list = (req, res) => {
   AuthorModel.getAll((err, results) => {

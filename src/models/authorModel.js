@@ -1,4 +1,4 @@
-import connection from "../config/db";
+import connection from "../config/db.js";
 
 const getAll = () => {
   const execute = connection.query("SELECT * FROM authors");

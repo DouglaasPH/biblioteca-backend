@@ -40,3 +40,5 @@ const remove = (req, res) => {
     res.status(201).json({ message: "Autor removido" });
   });
 };
+
+export { list, get, create, update, remove };

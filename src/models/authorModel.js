@@ -1,34 +1,38 @@
 import connection from "../config/db.js";
 
-const getAll = () => {
-  const execute = connection.query("SELECT * FROM authors");
-  return execute;
+const getAll = async () => {
+  const rows = await connection.query("SELECT * FROM authors");
+  return rows[0];
 };
 
-const getById = (id) => {
-  const execute = connection.query("SELECT * FROM authors WHERE id = ?", [id]);
-  return execute;
+const getById = async (id) => {
+  const rows = await connection.query("SELECT * FROM authors WHERE id = ?", [
+    id,
+  ]);
+  return rows[0][0];
 };
 
-const create = (data) => {
-  const execute = connection.query(
+const create = async (data) => {
+  const rows = await connection.query(
     "INSERT INTO authors (name, nationality) VALUES (?, ?)",
     [data.name, data.nationality]
   );
-  return execute;
+  return rows;
 };
 
-const update = (id, data) => {
-  const execute = connection.query(
+const update = async (id, data) => {
+  const execute = await connection.query(
     "UPDATE authors SET name = ?, nationality = ? WHERE id = ?",
     [data.name, data.nationality, id]
   );
-  return execute;
+  return execute[0].affectedRows;
 };
 
-const remove = (id) => {
-  const execute = connection.query("DELETE FROM authors WHERE id = ?", [id]);
-  return execute;
+const remove = async (id) => {
+  const execute = await connection.query("DELETE FROM authors WHERE id = ?", [
+    id,
+  ]);
+  return execute[0].affectedRows;
 };
 
 export { getAll, getById, create, update, remove };

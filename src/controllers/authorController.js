@@ -1,44 +1,66 @@
 import * as AuthorModel from "../models/authorModel.js";
 
-const list = (req, res) => {
-  AuthorModel.getAll((err, results) => {
-    if (err) return res.status(500).json(err);
+const list = async (req, res) => {
+  try {
+    const results = await AuthorModel.getAll();
     res.json(results);
-  });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
-const get = (req, res) => {
-  AuthorModel.getById(req.params.id, (err, results) => {
-    if (err) return res.status(500).json(err);
-    res.json(results[0]);
-  });
+const get = async (req, res) => {
+  try {
+    const result = await AuthorModel.getById(req.params.id);
+    if (!result)
+      return res.status(404).json({ message: "Autor não encontrado" });
+    res.json(result);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
-const create = (req, res) => {
+const create = async (req, res) => {
   if (!req.body.name || !req.body.nationality) {
     return res
       .status(400)
       .json({ message: "Um dos campos não foi preenchido corretamente" });
   }
 
-  AuthorModel.create(req.body, (err, result) => {
-    if (err) return res.status(500).json(err);
-    res.status(201).json({ id: result.insertId });
-  });
+  try {
+    await AuthorModel.create(req.body);
+    res.status(201).json({ message: "Autor adicionado" });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
-const update = (req, res) => {
-  AuthorModel.update(req.params.id, req.body, (err) => {
-    if (err) return res.status(500).json(err);
+const update = async (req, res) => {
+  if (!req.body.name || !req.body.nationality) {
+    return res
+      .status(400)
+      .json({ message: "Um dos campos não foi preenchido corretamente" });
+  }
+
+  try {
+    const affectedRows = await AuthorModel.update(req.params.id, req.body);
+    if (affectedRows == 0)
+      return res.status(404).json({ message: "Autor não encontrado" });
     res.json({ message: "Autor atualizado" });
-  });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
-const remove = (req, res) => {
-  AuthorModel.remove(req.params.id, (err) => {
-    if (err) return res.status(500).json(err);
-    res.json({ message: "Autor removido" });
-  });
+const remove = async (req, res) => {
+  try {
+    const affectedRows = await AuthorModel.remove(req.params.id);
+    if (affectedRows == 0)
+      return res.status(404).json({ message: "Autor não encontrado" });
+    res.json({ message: "Autor deletado" });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
 export { list, get, create, update, remove };

@@ -30,14 +30,14 @@ const create = (req, res) => {
 const update = (req, res) => {
   AuthorModel.update(req.params.id, req.body, (err) => {
     if (err) return res.status(500).json(err);
-    res.status(201).json({ message: "Autor atualizado" });
+    res.json({ message: "Autor atualizado" });
   });
 };
 
 const remove = (req, res) => {
   AuthorModel.remove(req.params.id, (err) => {
     if (err) return res.status(500).json(err);
-    res.status(201).json({ message: "Autor removido" });
+    res.json({ message: "Autor removido" });
   });
 };
 

@@ -2,7 +2,7 @@ import connection from "../config/db.js";
 
 const getAll = async () => {
   const rows = await connection.query("SELECT * FROM authors");
-  return rows[0];
+  return rows[0][0];
 };
 
 const getById = async (id) => {

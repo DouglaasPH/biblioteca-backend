@@ -1,20 +1,25 @@
 import * as BookModel from "../models/bookModel.js";
 
-const list = (req, res) => {
-  BookModel.getAll((err, results) => {
-    if (err) return res.status(500).json(err);
-    res.json(results);
-  });
+const list = async (req, res) => {
+  try {
+    const result = await BookModel.getAll();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
-const get = (req, res) => {
-  BookModel.getById(req.params.id, (err, results) => {
-    if (err) return res.status(500).json(err);
-    res.json(results[0]);
-  });
+const get = async (req, res) => {
+  try {
+    const result = await BookModel.getById(req.params.id);
+    if (!result) res.status(404).json({ message: "Livro não encontrado" });
+    res.json(result);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
-const create = (req, res) => {
+const create = async (req, res) => {
   if (
     !req.body.title ||
     !req.body.year ||
@@ -26,24 +31,49 @@ const create = (req, res) => {
       .json({ message: "Um dos campos não foi preenchido corretamente" });
   }
 
-  BookModel.create(req.body, (err, result) => {
-    if (err) return res.status(500).json(err);
-    res.status(201).json({ id: result.insertId });
-  });
+  try {
+    await BookModel.create(req.body);
+    res.status(201).json({ message: "Livro adicionado" });
+  } catch (err) {
+    if (err.errno == 1452)
+      return res.status(404).json({
+        message: "Autor não encontrado. Por favor, tente outro autor.",
+      });
+    res.status(500).json(err);
+  }
 };
 
-const update = (req, res) => {
-  BookModel.update(req.params.id, req.body, (err) => {
-    if (err) return res.status(500).json(err);
+const update = async (req, res) => {
+  if (
+    !req.body.title ||
+    !req.body.year ||
+    !req.body.category ||
+    !req.body.author_id
+  ) {
+    return res
+      .status(400)
+      .json({ message: "Um dos campos não foi preenchido corretamente" });
+  }
+
+  try {
+    const affectedRows = await BookModel.update(req.params.id, req.body);
+    if (affectedRows == 0)
+      return res.status(404).json({ message: "Livro não encontrado" });
     res.json({ message: "Livro atualizado" });
-  });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
-const remove = (req, res) => {
-  BookModel.remove(req.params.id, (err) => {
-    if (err) return res.status(500).json(err);
-    res.json({ message: "Livro removido" });
-  });
+const remove = async (req, res) => {
+  try {
+    const affectedRows = await BookModel.remove(req.params.id);
+    if (affectedRows == 0)
+      return res.status(404).json({ message: "Livro não encontrado" });
+    res.json({ message: "Livro deletado" });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 };
 
 export { list, get, create, update, remove };

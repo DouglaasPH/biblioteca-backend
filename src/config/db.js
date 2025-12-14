@@ -2,9 +2,10 @@ import mysql from "mysql2";
 
 const connection = mysql.createPool({
   host: "localhost",
+  port: "3307",
   user: "root",
-  password: "26042007",
-  database: "biblioteca",
+  password: "rootpassword",
+  database: "mydatabase",
 });
 
 export default connection;

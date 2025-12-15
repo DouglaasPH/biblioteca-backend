@@ -15,7 +15,7 @@ const getAll = async () => {
     INNER JOIN authors
       ON books.author_id = authors.id
       `);
-  return execute[0][0];
+  return execute[0];
 };
 
 const getById = async (id) => {

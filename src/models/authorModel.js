@@ -2,7 +2,7 @@ import connection from "../config/db.js";
 
 const getAll = async () => {
   const rows = await connection.query("SELECT * FROM authors");
-  return rows[0][0];
+  return rows[0];
 };
 
 const getById = async (id) => {
@@ -29,6 +29,7 @@ const update = async (id, data) => {
 };
 
 const remove = async (id) => {
+  await connection.query("DELETE FROM books WHERE author_id = ?", id);
   const execute = await connection.query("DELETE FROM authors WHERE id = ?", [
     id,
   ]);

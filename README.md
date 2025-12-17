@@ -115,7 +115,7 @@ npm run dev
 
 ### 3. Backend em execução
 
-O backend ficará disponível em `http://localhost:3000`
+O backend ficará disponível em `http://localhost:3001`
 
 ---
 
